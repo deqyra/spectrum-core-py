@@ -5,30 +5,25 @@ A small Python software which builds a spectrogram from an audio waveform, proce
 
 **Checklist:**
  - Roadmap:
-	 - ✘ Reading an audio file
-	 - ✘ Building the spectrum of a sample
-	 - ✘ Building the spectrogram of a sample
-	 - ✘ Apply image transformations
-	 - ✘ Reconstruct sound from a spectrogram
-	 - ✘ Exporting to an audio file
- - Parameters:
-	 - ✘ FFT size
-	 - ✘ Window type
-	 - ✘ Window size
-	 - ✘ Overlap proportion
+	 - ✅ Reading an audio file
+	 - ✅ Building the spectrum of a sample
+	 - ❌ Building the spectrogram of a sample
+	 - ❌ Apply image transformations
+	 - ❌ Reconstruct sound from a spectrogram
+	 - ❌ Exporting to an audio file
  - Supported audio file formats:
-	 - ✘ WAV
-	 - ✘ MP3
-	 - ✘ OGG
-	 - ✘ FLAC
+	 - ✅ WAV
+	 - ❌ MP3
+	 - ❌ OGG
+	 - ❌ FLAC
  - Image transformations:
-	 - ✘ Skewing
-	 - ✘ Gaussian blur
-	 - ✘ Spectral delay (generalisation of skewing)
-	 - ✘ Compression
+	 - ❌ Skewing
+	 - ❌ Gaussian blur
+	 - ❌ Spectral delay (generalisation of skewing)
+	 - ❌ Compression
  - Audio effects:
-	 - ✘ Equalizer
-	 - ✘ Reverb
-	 - ✘ Delay
-	 - ✘ Compressor
+	 - ❌ Equalizer
+	 - ❌ Reverb
+	 - ❌ Delay
+	 - ❌ Compressor
  
