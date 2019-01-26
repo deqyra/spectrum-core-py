@@ -1,6 +1,8 @@
 import wave
 from copy import deepcopy
 
+from util.byte_tools import ByteTools as b
+
 import numpy as np
 
 class Sample:
@@ -41,11 +43,11 @@ class Sample:
         return res
 
     def __compute_wave(self):
-        # self.wave = np.asarray(b.to_int(self.raw_data, self.sample_width, little_endian=True))
+        self.wave = np.asarray(b.to_int(self.raw_data, self.sample_width, little_endian=True))
         delattr(self, 'raw_data')
 
     def __trim_channels(self):
         if self.n_channels > 1:
             print('Sample.__trim_channels: {} audio channels were found. First channel only will be kept; others will be discarded.'.format(self.n_channels))
-            # self.raw_data = b.periodic_strip(self.raw_data, self.sample_width, self.sample_width * self.n_channels)
+            self.raw_data = b.periodic_strip(self.raw_data, self.sample_width, self.sample_width * self.n_channels)
             self.n_channels = 1
