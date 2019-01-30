@@ -1,4 +1,4 @@
-from core.sample import Sample
+from core.io.wav_reader import WavReader
 from core.wave_tools import WaveTools as WT
 
 from core.windows.uniform import UniformWindow
@@ -11,7 +11,9 @@ from core.windows.flat_top import FlatTopWindow
 filename = 'assets/sine220.wav'
 
 if __name__ == '__main__':
-    s = Sample(filename)
+    reader = WavReader(filename)
+    s = reader.get_sample()
+
     s.wave = WT.normalise(s.wave, 1 << (s.bit_depth - 1))
     WT.plot_wave(s, title='220Hz sine wave', save_image=False,filename='sine220_wave.png')
 
