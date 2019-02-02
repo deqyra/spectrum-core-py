@@ -1,6 +1,9 @@
 # MacOS
 .DS_Store
 
+# Wiki
+wiki/
+
 # PyCharm
 .idea/
 

@@ -137,6 +137,9 @@ class ByteTools:
         Returns:
             bool: whether or not value is a power of 2.
         """
+        if value == 0:
+            return True
+
         bits = value.bit_length()
         return value == (1 << (bits - 1))
 
