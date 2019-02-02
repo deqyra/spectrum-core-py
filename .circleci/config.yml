@@ -12,32 +12,24 @@ jobs:
 
     steps:
       - checkout
-      - run:
-          name: install virtualenv
-          command: |
-            sudo apt-get install virtualenv
 
       - restore_cache:
           keys:
-          - v1-dependencies-{{ checksum "requirements.txt" }}
-          - v1-dependencies-
+          - dependencies-{{ .Branch }}-{{ checksum "Pipfile.lock" }}
 
       - run:
-          name: install dependencies
+          name: install depencies
           command: |
+            sudo apt-get install virtualenv
             virtualenv -p python3 env
             source env/bin/activate
-            pip install -r requirements.txt
+            pip install pipenv
+            pipenv install
 
       - save_cache:
           paths:
             - ./env
-          key: v1-dependencies-{{ checksum "requirements.txt" }}
-
-      - save_cache:
-          paths:
-            - ./env
-          key: v1-dependencies-{{ checksum "requirements.txt" }}
+          key: dependencies-{{ .Branch }}-{{ checksum "Pipfile.lock" }}
 
   test:
     docker:
