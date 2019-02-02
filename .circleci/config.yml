@@ -4,7 +4,7 @@
 #
 version: 2
 jobs:
-  setup:
+  run_tests:
     docker:
       - image: circleci/python:3.5.4
 
@@ -31,14 +31,6 @@ jobs:
             - ./env
           key: dependencies-{{ .Branch }}-{{ checksum "Pipfile.lock" }}
 
-  test:
-    docker:
-      - image: circleci/python:3.5.4
-
-    working_directory: ~/spectrum-py
-
-    steps:
-      - checkout
       - run:
           name: run tests
           command: |
@@ -54,7 +46,4 @@ workflows:
   version: 2
   run_tests:
     jobs:
-      - setup
-      - test:
-          requires:
-            - setup
+      - run_tests

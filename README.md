@@ -1,6 +1,8 @@
 ﻿# Spectrum
 *Applying image processing to sound in [Python](https://www.python.org/).*
 
+[![CircleCI](https://circleci.com/gh/deqyra/spectrum-core-py.svg?style=svg)](https://circleci.com/gh/deqyra/spectrum-core-py)
+
 A small Python software which builds a spectrogram from an audio waveform, processes spectral data as an image, and turns it back into a waveform. Creates otherwise unachievable sounds.  
 
 **Checklist:**
