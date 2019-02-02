@@ -1,46 +1,28 @@
 import math
-from datetime import datetime
-
-import matplotlib.pyplot as plt
+from copy import deepcopy
 import numpy as np
 from numpy.fft import fft, fftfreq
 
+from core.sample import Sample
 from core.window import Window
-from plot.audio_hz_scale import AudioHzScale
 
-class WaveTools:
+class DSPToolbox:
     """
     Class to wrap an audio signal, providing a collection of tools to perform different operations on it.
     """
-    def __spectrum_to_grey(self, slice):
-        pass
-
     @staticmethod
-    def spectrogram(sample, window_size):
-        i = 0
+    def normalise(sample):
+        wave_min = min(sample.wave)
+        wave_max = max(sample.wave)
+        max_value = 1 << (sample.sample_width * 8) - 1
 
-        spectrum_slices = []
-        while i < len(sample.wave):
-            lower = i
-            upper = i + window_size
-            if upper > len(sample.wave):
-                upper = len(sample.wave)
+        max_amp = max(abs(wave_min), abs(wave_max))
+        factor = max_value / max_amp
 
-            slice = sample.slice(lower, upper)
-            slice_fft = WaveTools.fft(slice)
+        new_wave = deepcopy(sample.wave)
+        new_wave = new_wave * factor
 
-            spectrum_slices.append(...)
-            i += upper
-
-        gray_slices = [sample.__slice_to_gray(slice) for slice in spectrum_slices]
-        # TODO: generate pixel shades depending on amps along bins
-
-    @staticmethod
-    def amplitude_axes(sample):
-        wave_x = np.arange(len(sample.wave)) / sample.sample_rate
-        wave_y = np.asarray(sample.wave) / (1 << (sample.bit_depth - 1))
-
-        return wave_x, wave_y
+        return Sample(new_wave, sample.sample_rate, sample.sample_width)
 
     @staticmethod
     def fft(sample, window, phase=False, rms=False, pow=False):
@@ -58,7 +40,7 @@ class WaveTools:
         max_freq = nyquist - bin_spac
 
         if not isinstance(window, Window):
-            raise TypeError('WaveTools.fft_axes: passed window is not a valid window.')
+            raise TypeError('DSPToolbox.fft: passed window is not a valid window.')
 
         # Window the sample
         wave = window.process(sample.wave) / window.coherent_gain
@@ -142,57 +124,3 @@ class WaveTools:
             return list(map(lambda x: x * np.pi / 180, degrees))
 
         return degrees * np.pi / 180
-
-    @staticmethod
-    def plot_wave(sample, title='', save_image=False, filename=''):
-        x, y = WaveTools.amplitude_axes(sample)
-        plt.plot(x, y)
-
-        axes = plt.gca()
-        axes.set_xlim([0, x[-1]])
-        axes.set_ylim([-1, 1])
-
-        plt.title(title)
-        plt.show()
-
-        if save_image:
-            file = filename or 'wave_{}.png'.format(datetime.now().strftime('%Y-%m-%d_%H:%M:%S'))
-            plt.savefig(file)
-
-    @staticmethod
-    def plot_spectrum(fft_values, title='', fill=True, show_constant=None, save_image=False, filename=''):
-        # TODO: logarithmic x scale
-        # TODO: add title
-
-        dbs = WaveTools.to_db(fft_values['amp'], fft_values['ref'])
-        plt.plot(fft_values['bins'], dbs, lw=0.25)
-        min_value = dbs.min()
-
-        if fill:
-            dbs[0] = min_value
-            dbs[-1] = min_value
-            plt.fill(fft_values['bins'], dbs)
-
-        if show_constant is not None:
-            plt.plot(fft_values['bins'], np.full(fft_values['bins'].shape[0], show_constant))
-
-        axes = plt.gca()
-        axes.set_xscale('audio_hz')
-        axes.set_xlim([20, 20000])
-        axes.set_ylim([min_value, 0])
-
-        plt.title(title)
-        plt.show()
-
-        if save_image:
-            file = filename or 'spectrum_{}.png'.format(datetime.now().strftime('%Y-%m-%d_%H:%M:%S'))
-            plt.savefig(file)
-
-    @staticmethod
-    def normalise(wave, max_value):
-        wave_min = min(wave)
-        wave_max = max(wave)
-        max_amp = max(abs(wave_min), abs(wave_max))
-        factor = max_value / max_amp
-        if factor != 1.:
-            return list(map(lambda x: int(round(x * factor)), wave))
