@@ -1,5 +1,6 @@
 from datetime import datetime
 
+import matplotlib
 import matplotlib.pyplot as plt
 import numpy as np
 
@@ -24,7 +25,11 @@ class AudioPlotter:
         axes.set_ylim([-1, 1])
 
         plt.title(title)
-        plt.show()
+
+        if matplotlib.get_backend() == 'agg':
+            save_image = True
+        else:
+            plt.show()
 
         if save_image:
             file = filename or 'wave_{}.png'.format(datetime.now().strftime('%Y-%m-%d_%H:%M:%S'))
@@ -50,7 +55,11 @@ class AudioPlotter:
         axes.set_ylim([min_value, 0])
 
         plt.title(title)
-        plt.show()
+
+        if matplotlib.get_backend() == 'agg':
+            save_image = True
+        else:
+            plt.show()
 
         if save_image:
             file = filename or 'spectrum_{}.png'.format(datetime.now().strftime('%Y-%m-%d_%H:%M:%S'))
