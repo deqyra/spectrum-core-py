@@ -12,6 +12,7 @@ from core.windows.flat_top import FlatTopWindow
 
 from plot.audio_plotter import AudioPlotter as AP
 
+folder = 'examples/output/window_comparison'
 filename = 'assets/sine220.wav'
 
 class WindowComparisonExample(Example):
@@ -21,7 +22,7 @@ class WindowComparisonExample(Example):
         s = reader.get_sample()
 
         s = DSP.normalise(s)
-        AP.plot_wave(s, title='220Hz sine wave', save_image=True, filename='examples/window_comparison/sine220_wave.png')
+        AP.plot_wave(s, title='220Hz sine wave', save_image=True, filename='{}/sine220_wave.png'.format(folder))
 
         window_classes = [
             UniformWindow,
@@ -37,7 +38,7 @@ class WindowComparisonExample(Example):
             fft = DSP.fft(s, win)
             AP.plot_spectrum(fft, show_constant=-80, save_image=True,
                              title='220Hz sine spectrum ({} window)'.format(win.name),
-                             filename='examples/window_comparison/sine220_{}_spectrum.png'.format(win.name))
+                             filename='{}/sine220_{}_spectrum.png'.format(folder, win.name))
 
 if __name__ == '__main__':
     WindowComparisonExample.run()

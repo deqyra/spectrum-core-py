@@ -40,7 +40,7 @@ jobs:
     steps:
       - checkout
       - run:
-          name: run tests
+          name: run test
           command: |
             source env/bin/activate
             export PYTHONPATH=`pwd`
