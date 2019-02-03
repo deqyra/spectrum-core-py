@@ -4,20 +4,29 @@ import matplotlib
 import matplotlib.pyplot as plt
 import numpy as np
 
+from core.sample import Sample
 from core.dsp_toolbox import DSPToolbox as DSP
+from core.fft_result import FFTResult
+
 from plot.audio_hz_scale import AudioHzScale
 
 class AudioPlotter:
-    @staticmethod
-    def __amplitude_axes(sample):
-        wave_x = np.arange(len(sample.wave)) / sample.sample_rate
-        wave_y = np.asarray(sample.wave) / (1 << (sample.bit_depth - 1))
-
-        return wave_x, wave_y
-
+    """
+    Provides static methods to plot all kinds of audio-related stuff.
+    """
     @staticmethod
     def plot_wave(sample, title='', save_image=False, filename=''):
-        x, y = AudioPlotter.__amplitude_axes(sample)
+        """
+        Plots the waveform of a given sample.
+
+        Args:
+            sample (Sample): sample whose waveform is to plot
+            title (str): title of the plot
+            save_image (bool): whether to write the plot to the disk as an image
+            filename (str): filename to save the plot image to if saving
+        """
+        x = np.arange(len(sample.wave)) / sample.sample_rate
+        y = np.asarray(sample.wave) / (1 << (sample.bit_depth - 1))
         plt.plot(x, y)
 
         axes = plt.gca()
@@ -37,17 +46,27 @@ class AudioPlotter:
 
     @staticmethod
     def plot_spectrum(fft, title='', fill=True, show_constant=None, save_image=False, filename=''):
-        dbs = DSP.to_db(fft['amp'], fft['ref'])
-        plt.plot(fft['bins'], dbs, lw=0.25)
+        """
+        Plots the spectrum corresponding to input FF data.
+        Args:
+            fft (FFTResult): the FFT data whose spectrum is to plot
+            fill (bool): whether to fill with a color underneath the spectrum (looks awkward if False)
+            show_constant (int): if not None, draws a red horizontal line at a certain level on the plot
+            title (str): title of the plot
+            save_image (bool): whether to write the plot to the disk as an image
+            filename (str): filename to save the plot image to if saving
+        """
+        dbs = DSP.to_db(fft.amp_spectrum, fft.reference_level)
+        plt.plot(fft.frequency_bins, dbs, lw=0.25)
         min_value = dbs.min()
 
         if fill:
             dbs[0] = min_value
             dbs[-1] = min_value
-            plt.fill(fft['bins'], dbs)
+            plt.fill(fft.frequency_bins, dbs)
 
         if show_constant is not None:
-            plt.plot(fft['bins'], np.full(fft['bins'].shape[0], show_constant))
+            plt.plot(fft.frequency_bins, np.full(fft.frequency_bins.shape[0], show_constant))
 
         axes = plt.gca()
         axes.set_xscale('audio_hz')

@@ -5,6 +5,7 @@ from numpy.fft import fft, fftfreq
 
 from core.sample import Sample
 from core.window import Window
+from core.fft_result import FFTResult
 
 class DSPToolbox:
     """
@@ -12,6 +13,14 @@ class DSPToolbox:
     """
     @staticmethod
     def normalise(sample):
+        """
+        Returns a normalised copy of the input sample.
+        Args:
+            sample (Sample): the sample to copy and normalise
+
+        Returns:
+            (Sample): a normalised copy of the input sample
+        """
         wave_min = min(sample.wave)
         wave_max = max(sample.wave)
         max_value = 1 << (sample.sample_width * 8) - 1
@@ -25,7 +34,7 @@ class DSPToolbox:
         return Sample(new_wave, sample.sample_rate, sample.sample_width)
 
     @staticmethod
-    def fft(sample, window, phase=False, rms=False, pow=False):
+    def fft(sample, window):
         # This is to cut the second half of the spectrum (aliases above the Nyquist freq or negative freqs)
         # This is half the length of the input wave since the length of numpy's fft happens to be exactly that.
         max_index = int(math.ceil(len(sample.wave) / 2))
@@ -53,9 +62,7 @@ class DSPToolbox:
         # Separate amp and phase info, scale amp values
         fft_amp = np.abs(fft_y)
 
-        fft_phase = None
-        if phase:
-            fft_phase = np.angle(fft_y)
+        fft_phase = np.angle(fft_y)
 
         # First, scale the FFT output (relative to the sample count in the input wave)
         fft_amp /= len(wave)
@@ -66,28 +73,25 @@ class DSPToolbox:
         # The DC offset should be 0 so there would theoretically be no need for that, but we do it just to make sure
         fft_amp[0] /= 2
 
-        fft_rms = None
-        fft_pow = None
         # The RMS amplitude spectrum can be useful for certain computations
-        if rms or pow:
-            fft_rms = fft_amp * np.sqrt(2)
-            fft_rms[0] /= np.sqrt(2)
-            # The power spectrum too
-            if pow:
-                fft_pow = np.square(fft_rms)
+        fft_rms = fft_amp * np.sqrt(2)
+        fft_rms[0] /= np.sqrt(2)
+        # The power spectrum too
+        fft_pow = np.square(fft_rms)
 
-        return {
-            'bins': fft_bins,
+        fft_dict = {
+            'frequency_bins': fft_bins,
             'bin_spacing': bin_spac,
-            'nyquist': nyquist,
-            'max_freq': max_freq,
-            'amp': fft_amp,
-            'phase': fft_phase,
-            'rms':fft_rms,
-            'pow': fft_pow,
-            'ref': max_value,
-            'window': window.name
+            'nyquist_frequency': nyquist,
+            'max_frequency': max_freq,
+            'amp_spectrum': fft_amp,
+            'phase_spectrum': fft_phase,
+            'rms_spectrum':fft_rms,
+            'power_spectrum': fft_pow,
+            'reference_level': max_value,
+            'window_type': window.name
         }
+        return FFTResult(**fft_dict)
 
     @staticmethod
     def to_db(levels, reference, square=True):
