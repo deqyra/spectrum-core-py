@@ -6,6 +6,7 @@ from numpy.fft import fft, fftfreq
 from core.sample import Sample
 from core.window import Window
 from core.fft_result import FFTResult
+from core.spectrogram import Spectrogram
 
 class DSPToolbox:
     """
@@ -32,6 +33,45 @@ class DSPToolbox:
         new_wave = new_wave * factor
 
         return Sample(new_wave, sample.sample_rate, sample.sample_width)
+
+    @staticmethod
+    def spectrogram_from_sample(sample, window, size=512, overlap=256):
+        """
+        Generates the spectrogram for the input sample.
+
+        Args:
+            sample (Sample): the input sample whose spectrogram to generate.
+            window (Window): the window with which to process the sample.
+            size (int): the size of slices to extract from the sample.
+            overlap (int): the number of samples by which slices should overlap.
+            spp (int): samples per pixel - number of samples to consider for the value of one pixel.
+
+        Returns:
+            Generated spectrogram.
+        """
+
+        length = len(sample.wave)
+
+        slices = []
+        i = 0
+        while i < length:
+            upper = min(i + size, length)
+            slices.append(sample.slice(i, upper))
+            i += (size - overlap)
+
+        fft_slices = []
+        for s in slices:
+            fft_slices.append(DSPToolbox.fft(s, window))
+
+        return Spectrogram(fft_slices, size, overlap)
+
+    @staticmethod
+    def spectrogram_to_image(spectrogram, spp=None):
+        pixels = []
+        width = length // spp
+
+        i = 0
+        while i < len(sample.wave):
 
     @staticmethod
     def fft(sample, window):
