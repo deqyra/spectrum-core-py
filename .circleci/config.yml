@@ -4,7 +4,7 @@
 #
 version: 2
 jobs:
-  setup:
+  run_tests:
     docker:
       - image: circleci/python:3.5.4
 
@@ -13,32 +13,24 @@ jobs:
     steps:
       - checkout
 
-      # Download and cache dependencies
       - restore_cache:
           keys:
-          - v1-dependencies-{{ checksum "requirements.txt" }}
-          - v1-dependencies-
+          - dependencies-{{ .Branch }}-{{ checksum "Pipfile.lock" }}
 
       - run:
-          name: install dependencies
+          name: install depencies
           command: |
+            sudo apt-get install virtualenv
             virtualenv -p python3 env
             source env/bin/activate
-            pip install -r requirements.txt
+            pip install pipenv
+            pipenv install
 
       - save_cache:
           paths:
             - ./env
-          key: v1-dependencies-{{ checksum "requirements.txt" }}
+          key: dependencies-{{ .Branch }}-{{ checksum "Pipfile.lock" }}
 
-  test:
-    docker:
-      - image: circleci/python:3.5.4
-
-    working_directory: ~/spectrum-py
-
-    steps:
-      - checkout
       - run:
           name: run test
           command: |
@@ -54,7 +46,4 @@ workflows:
   version: 2
   run_tests:
     jobs:
-      - build
-      - test:
-          requires:
-            - setup
+      - run_tests
