@@ -2,6 +2,7 @@ from datetime import datetime
 
 import matplotlib
 import matplotlib.pyplot as plt
+from matplotlib.ticker import FormatStrFormatter
 import numpy as np
 
 from core.sample import Sample
@@ -84,3 +85,40 @@ class AudioPlotter:
             file = filename or 'spectrum_{}.png'.format(datetime.now().strftime('%Y-%m-%d_%H:%M:%S'))
             plt.savefig(file)
 
+    @staticmethod
+    def plot_spectrogram(spectrogram):
+        im = DSP.spectrogram_to_image(spectrogram)
+        matrix = np.asarray(im)
+
+        max_freq = spectrogram.fft_slices[0].max_frequency
+        sampling_freq = spectrogram.fft_slices[0].metadata['sampling_frequency']
+        sample_duration = 1 / sampling_freq
+        spectrogram_duration = sample_duration * spectrogram.sample_span
+
+        xticks, xlabels, yticks, ylabels = AudioPlotter._get_spectrogram_axis_info(spectrogram_duration, im.width, max_freq, im.height)
+
+        plt.imshow(matrix, cmap='gray', vmin=0, vmax=255)
+        plt.xticks(xticks, xlabels)
+        plt.yticks(yticks, ylabels)
+        plt.show()
+
+    @staticmethod
+    def plot_image(im):
+        matrix = np.asarray(im)
+        plt.imshow(matrix, cmap='gray', vmin=0, vmax=255)
+        plt.show()
+
+    @staticmethod
+    def _get_spectrogram_axis_info(duration, width, max_freq, height):
+        N_XTICKS = 6
+        N_YTICKS = 6
+
+        xtick_period = width / (N_XTICKS - 1)
+        xticks = [int(i * xtick_period) for i in range(N_XTICKS)]
+        xlabels = [int(i * (duration / (N_XTICKS - 1))) for i in range(N_XTICKS)]
+
+        ytick_period = height / (N_YTICKS - 1)
+        yticks = [int(i * ytick_period) for i in range(N_YTICKS)]
+        ylabels = [int(i * (max_freq / (N_YTICKS - 1))) for i in reversed(range(N_YTICKS))]
+
+        return xticks, xlabels, yticks, ylabels

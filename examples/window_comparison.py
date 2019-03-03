@@ -12,8 +12,8 @@ from core.windows.flat_top import FlatTopWindow
 
 from plot.audio_plotter import AudioPlotter as AP
 
-folder = 'examples/output/window_comparison'
-filename = 'assets/sine220.wav'
+folder = 'output/window_comparison'
+filename = '../assets/sine220.wav'
 
 class WindowComparisonExample(Example):
     @staticmethod

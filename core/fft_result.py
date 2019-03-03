@@ -3,8 +3,12 @@ class FFTResult:
     Dummy object essentially used for type checking purposes for now.
     May prove handy later on.
     """
+    _default_metadata = {
+        'sampling_frequency': 44100
+    }
+
     def __init__(self, frequency_bins, bin_spacing, nyquist_frequency, max_frequency, amp_spectrum,
-                       phase_spectrum, rms_spectrum, power_spectrum, reference_level, window_type):
+                       phase_spectrum, rms_spectrum, power_spectrum, reference_level, window_type, metadata=None):
         self.frequency_bins = frequency_bins
         self.bin_spacing = bin_spacing
         self.nyquist_frequency = nyquist_frequency
@@ -15,3 +19,4 @@ class FFTResult:
         self.power_spectrum = power_spectrum
         self.reference_level = reference_level
         self.window_type = window_type
+        self.metadata = metadata or self._default_metadata

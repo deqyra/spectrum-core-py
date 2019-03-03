@@ -1,1 +1,2 @@
 from examples.window_comparison import WindowComparisonExample
+from examples.spectrogram_to_image import SpectrogramToImageExample

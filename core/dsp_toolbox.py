@@ -2,6 +2,7 @@ import math
 from copy import deepcopy
 import numpy as np
 from numpy.fft import fft, fftfreq
+from PIL import Image
 
 from core.sample import Sample
 from core.window import Window
@@ -42,7 +43,7 @@ class DSPToolbox:
         Args:
             sample (Sample): the input sample whose spectrogram to generate.
             window (Window): the window with which to process the sample.
-            size (int): the size of slices to extract from the sample.
+            _size (int): the size of slices to extract from the sample.
             overlap (int): the number of samples by which slices should overlap.
             spp (int): samples per pixel - number of samples to consider for the value of one pixel.
 
@@ -51,13 +52,14 @@ class DSPToolbox:
         """
 
         length = len(sample.wave)
+        _size = 2 * size
 
         slices = []
         i = 0
         while i < length:
-            upper = min(i + size, length)
+            upper = min(i + _size, length)
             slices.append(sample.slice(i, upper))
-            i += (size - overlap)
+            i += (_size - overlap)
 
         fft_slices = []
         for s in slices:
@@ -66,12 +68,15 @@ class DSPToolbox:
         return Spectrogram(fft_slices, size, overlap)
 
     @staticmethod
-    def spectrogram_to_image(spectrogram, spp=None):
-        pixels = []
-        width = length // spp
+    def spectrogram_to_image(spectrogram):
+        w, h = len(spectrogram.fft_slices), spectrogram.fft_size
+        im = Image.new('L', (w, h))
+        for i, slice in enumerate(spectrogram.fft_slices):
+            for j, amp in enumerate(slice.amp_spectrum):
+                val = int((amp / slice.reference_level) * 255)
+                im.putpixel((i, h - j - 1), val)
 
-        i = 0
-        while i < len(sample.wave):
+        return im
 
     @staticmethod
     def fft(sample, window):
@@ -129,7 +134,10 @@ class DSPToolbox:
             'rms_spectrum':fft_rms,
             'power_spectrum': fft_pow,
             'reference_level': max_value,
-            'window_type': window.name
+            'window_type': window.name,
+            'metadata': {
+                'sampling_frequency': 44100
+            }
         }
         return FFTResult(**fft_dict)
 
