@@ -68,7 +68,11 @@ class DSPToolbox:
         return Spectrogram(fft_slices, size, overlap)
 
     @staticmethod
-    def spectrogram_to_image(spectrogram):
+    def sample_from_spectrogram(spectrogram):
+        pass
+
+    @staticmethod
+    def image_from_spectrogram(spectrogram):
         w, h = len(spectrogram.fft_slices), spectrogram.fft_size
         im = Image.new('L', (w, h))
         for i, slice in enumerate(spectrogram.fft_slices):
@@ -77,6 +81,10 @@ class DSPToolbox:
                 im.putpixel((i, h - j - 1), val)
 
         return im
+
+    @staticmethod
+    def spectrogram_from_image(image):
+        pass
 
     @staticmethod
     def fft(sample, window):

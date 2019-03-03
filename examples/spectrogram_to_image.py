@@ -15,7 +15,7 @@ class SpectrogramToImageExample(Example):
         sample = reader.get_sample()
         window = HannWindow()
         spectro = DSP.spectrogram_from_sample(sample, window, size=1024, overlap=768)
-        im = DSP.spectrogram_to_image(spectro)
+        im = DSP.image_from_spectrogram(spectro)
         im.save('{}/exode_spectrogram.png'.format(folder))
         # AP.plot_spectrogram(spectro)
 

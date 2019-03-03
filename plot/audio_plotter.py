@@ -87,7 +87,7 @@ class AudioPlotter:
 
     @staticmethod
     def plot_spectrogram(spectrogram):
-        im = DSP.spectrogram_to_image(spectrogram)
+        im = DSP.image_from_spectrogram(spectrogram)
         matrix = np.asarray(im)
 
         max_freq = spectrogram.fft_slices[0].max_frequency
