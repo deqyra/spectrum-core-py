@@ -17,7 +17,7 @@ metadata = {
     'reference_level': 1 << 15
 }
 
-class SpectrogramToImageExample(Example):
+class ImageToSpectrogramExample(Example):
     @staticmethod
     def run():
         i = Image.open(filename)
@@ -30,4 +30,4 @@ class SpectrogramToImageExample(Example):
         writer.write(sample)
 
 if __name__ == '__main__':
-    SpectrogramToImageExample.run()
+    ImageToSpectrogramExample.run()
