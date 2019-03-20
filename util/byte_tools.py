@@ -85,6 +85,22 @@ class ByteTools:
         return res
 
     @staticmethod
+    def to_bytearray(array, byte_width, little_endian=False):
+        endian = 'big'
+        if little_endian:
+            endian = 'little'
+
+        res = bytearray()
+        for i in array:
+            res.append(int(i).to_bytes(byte_width, endian, signed=True))
+
+        return res
+
+    @staticmethod
+    def to_bytes(array, byte_width, little_endian=False):
+        return bytes(ByteTools.to_bytearray(array, byte_width, little_endian))
+
+    @staticmethod
     def reverse_byte_order(byte_string):
         """
         Reverses the order in which bytes appear in the input bytes-like.
