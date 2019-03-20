@@ -8,15 +8,18 @@ from examples.example import Example
 filename = '../assets/exode.wav'
 folder = 'output/spectrogram_generation'
 
+sizes = [128, 256, 512, 1024, 2048, 4096, 8192]
+
 class SpectrogramToImageExample(Example):
     @staticmethod
     def run():
         reader = WavReader(filename)
         sample = reader.get_sample()
         window = HannWindow()
-        spectro = DSP.spectrogram_from_sample(sample, window, size=1024, overlap=768)
-        im = DSP.image_from_spectrogram(spectro)
-        im.save('{}/exode_spectrogram.png'.format(folder))
+        for size in sizes:
+            spectro = DSP.spectrogram_from_sample(sample, window, size=size, overlap=(size // 2))
+            im = DSP.image_from_spectrogram(spectro)
+            im.save('{}/exode_spectrogram_fft{}.png'.format(folder, size))
         # AP.plot_spectrogram(spectro)
 
 if __name__ == '__main__':
