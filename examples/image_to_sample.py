@@ -9,7 +9,7 @@ from core.spectrogram_image import SpectrogramImage
 from examples.example import Example
 
 filename = '../assets/exode_spectrogram_fft512.png'
-folder = 'output/wave_restoration'
+folder = 'output/sample_restoration'
 
 metadata = {
     'sampling_frequency': 44100,

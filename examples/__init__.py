@@ -1,6 +1,6 @@
 from examples.window_comparison import WindowComparisonExample
-from examples.spectrogram_to_image import SpectrogramToImageExample
-from examples.image_to_spectrogram import ImageToSpectrogramExample
+from examples.sample_to_image import SpectrogramToImageExample
+from examples.image_to_sample import ImageToSpectrogramExample
 
 all_examples = [
     WindowComparisonExample,
