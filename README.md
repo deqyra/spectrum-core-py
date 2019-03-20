@@ -9,10 +9,10 @@ A small Python software which builds a spectrogram from an audio waveform, proce
  - Roadmap:
 	 - ✅ Reading an audio file
 	 - ✅ Building the spectrum of a sample
-	 - ❌ Building the spectrogram of a sample
+	 - ✅ Building the spectrogram of a sample
 	 - ❌ Apply image transformations
-	 - ❌ Reconstruct sound from a spectrogram
-	 - ❌ Exporting to an audio file
+	 - ~ Reconstruct sound from a spectrogram
+	 - ✅ Exporting to an audio file
  - Supported audio file formats:
 	 - ✅ WAV
 	 - ❌ MP3
