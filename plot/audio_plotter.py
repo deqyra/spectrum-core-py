@@ -38,12 +38,16 @@ class AudioPlotter:
 
         if matplotlib.get_backend() == 'agg':
             save_image = True
-        else:
-            plt.show()
 
         if save_image:
             file = filename or 'wave_{}.png'.format(datetime.now().strftime('%Y-%m-%d_%H:%M:%S'))
+            plt.draw()
             plt.savefig(file)
+
+        try:
+            plt.show()
+        except:
+            pass
 
     @staticmethod
     def plot_spectrum(fft, title='', fill=True, show_constant=None, save_image=False, filename=''):
@@ -78,12 +82,16 @@ class AudioPlotter:
 
         if matplotlib.get_backend() == 'agg':
             save_image = True
-        else:
-            plt.show()
 
         if save_image:
             file = filename or 'spectrum_{}.png'.format(datetime.now().strftime('%Y-%m-%d_%H:%M:%S'))
+            plt.draw()
             plt.savefig(file)
+
+        try:
+            plt.show()
+        except:
+            pass
 
     @staticmethod
     def plot_spectrogram(spectrogram, save_image=False, filename=''):
@@ -103,14 +111,23 @@ class AudioPlotter:
         plt.yticks(yticks, ylabels)
         plt.show()
 
+        if matplotlib.get_backend() == 'agg':
+            save_image = True
+
         if save_image:
             file = filename or 'spectrogram_{}.png'.format(datetime.now().strftime('%Y-%m-%d_%H:%M:%S'))
             plt.imsave(file, matrix)
+
+        try:
+            plt.show()
+        except:
+            pass
 
     @staticmethod
     def plot_image(im):
         matrix = np.asarray(im)
         plt.imshow(matrix, cmap='gray', vmin=0, vmax=255)
+        plt.draw()
         plt.show()
 
     @staticmethod
