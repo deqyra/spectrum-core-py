@@ -86,8 +86,9 @@ class AudioPlotter:
             plt.savefig(file)
 
     @staticmethod
-    def plot_spectrogram(spectrogram):
-        im = DSP.image_from_spectrogram(spectrogram)
+    def plot_spectrogram(spectrogram, save_image=False, filename=''):
+        spectro_im = DSP.image_from_spectrogram(spectrogram)
+        im = spectro_im.i
         matrix = np.asarray(im)
 
         max_freq = spectrogram.fft_slices[0].max_frequency
@@ -101,6 +102,10 @@ class AudioPlotter:
         plt.xticks(xticks, xlabels)
         plt.yticks(yticks, ylabels)
         plt.show()
+
+        if save_image:
+            file = filename or 'spectrogram_{}.png'.format(datetime.now().strftime('%Y-%m-%d_%H:%M:%S'))
+            plt.imsave(file, matrix)
 
     @staticmethod
     def plot_image(im):

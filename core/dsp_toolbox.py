@@ -33,9 +33,7 @@ class DSPToolbox:
         max_amp = max(abs(wave_min), abs(wave_max))
         factor = max_value / max_amp
 
-        new_wave = deepcopy(sample.wave)
-        new_wave = new_wave * factor
-
+        new_wave = list(map(lambda x: x * factor, sample.wave))
         return Sample(new_wave, sample.sample_rate, sample.sample_width)
 
     @staticmethod
@@ -93,7 +91,7 @@ class DSPToolbox:
             Sample: the restored sample
         """
 
-        overlap = spectrogram.overlap
+        overlap = int(spectrogram.overlap)
         wave = []
         for i, slice in enumerate(spectrogram.fft_slices):
             # Restore spectrum info in the same format as it came out of numpy
@@ -104,7 +102,7 @@ class DSPToolbox:
             amp_array *= sample_count
 
             # Append 0-axis symmetrical image of amp spectrum (frequency aliases)
-            amp_array = amp_array.append(list(reversed(amp_array)))
+            amp_array = np.concatenate((amp_array, list(reversed(amp_array))))
             # Remove duplicate 0-frequency
             amp_array = amp_array[:-1]
 
@@ -117,16 +115,27 @@ class DSPToolbox:
             # Multiply by -1 to get symmetry around 0
             reversed_phase_array = reversed_phase_array * (-1)
             # Append to phase spectrum
-            phase_array = phase_array.append(reversed_phase_array)
+            phase_array = np.concatenate((phase_array, reversed_phase_array))
 
             complex_array = 1j * phase_array
             complex_array += amp_array
             wave_slice = ifft(complex_array)
-            wave = wave[:-overlap].append(np.abs(wave_slice).tolist())
+            list_slice = deepcopy(np.abs(wave_slice).tolist())
+
+            if not wave:
+                wave = list_slice
+            elif len(wave) <= overlap:
+                wave.extend(list_slice)
+            else:
+                wave = wave[:-overlap]
+                wave.extend(list_slice)
 
         reference_level = spectrogram.fft_slices[0].reference_level
         sample_width = ((int(reference_level).bit_length() - 1) // 8) + 1
-        return Sample(wave, spectrogram.metadata['sampling_rate'], sample_width)
+
+        wave = list(map(lambda x: x - reference_level, wave))
+
+        return Sample(wave, spectrogram.metadata['sampling_frequency'], sample_width)
 
     @staticmethod
     def image_from_spectrogram(spectrogram):

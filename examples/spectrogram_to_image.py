@@ -17,10 +17,10 @@ class SpectrogramToImageExample(Example):
         sample = reader.get_sample()
         window = HannWindow()
         for size in sizes:
-            spectro = DSP.spectrogram_from_sample(sample, window, size=size, overlap=(size // 2))
+            spectro = DSP.spectrogram_from_sample(sample, window, size=size)
             im = DSP.image_from_spectrogram(spectro)
-            im.save('{}/exode_spectrogram_fft{}.png'.format(folder, size))
-        # AP.plot_spectrogram(spectro)
+            im.i.save('{}/exode_spectrogram_fft{}.png'.format(folder, size))
+            AP.plot_spectrogram(spectro)
 
 if __name__ == '__main__':
     SpectrogramToImageExample.run()

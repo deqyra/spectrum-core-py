@@ -17,6 +17,6 @@ class SpectrogramImage:
             self.metadata = {}
 
         # Merge default metadata keys if not present in passed dictionary
-        for k, v in self._default_metadata:
+        for k, v in self._default_metadata.items():
             if k not in self.metadata:
                 self.metadata[k] = v

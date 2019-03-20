@@ -92,7 +92,7 @@ class ByteTools:
 
         res = bytearray()
         for i in array:
-            res.append(int(i).to_bytes(byte_width, endian, signed=True))
+            res += int(i).to_bytes(byte_width, endian, signed=True)
 
         return res
 

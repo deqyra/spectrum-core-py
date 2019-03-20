@@ -15,6 +15,9 @@ class Sample:
         self.bit_depth = 8 * sample_width
 
     def slice(self, start, end):
+        start = int(start)
+        end = int(end)
+
         if start < 0:
             raise ValueError('Sample.slice: `start` cannot be lower than 0.')
         if end > len(self.wave):

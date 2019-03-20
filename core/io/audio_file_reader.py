@@ -1,6 +1,6 @@
 class AudioFileReader:
-    def __init__(self, filename):
-        raise NotImplementedError('AudioFileReader.__init__: abstract method was called. Do all inherited file readers override __init__ properly?')
+    def __init__(self):
+        pass
 
     def read(self):
         raise NotImplementedError('AudioFileReader.read: abstract method was called. Do all inherited file readers override read properly?')
